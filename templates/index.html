@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h2>Pseudonymised Patient Data Management System</h2>
+    <p>Secure handling of patient data for clinical research and analysis</p>
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <h3>Data Protection</h3>
+        <p>Implements pseudonymisation to protect patient identities while enabling valuable research.</p>
+    </div>
+    <div class="feature-card">
+        <h3>GDPR Compliant</h3>
+        <p>Designed in accordance with GDPR principles and NHS data protection standards.</p>
+    </div>
+    <div class="feature-card">
+        <h3>Role-based Access</h3>
+        <p>Different access levels for administrators, clinicians, and researchers.</p>
+    </div>
+</div>
+
+{% if session.username %}
+<div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+        {% if session.role == 'admin' %}
+            <a href="{{ url_for('add_patient') }}" class="btn btn-primary">Add New Patient</a>
+        {% endif %}
+        {% if session.role == 'clinician' %}
+            <a href="{{ url_for('add_clinical_data') }}" class="btn btn-primary">Add Clinical Data</a>
+        {% endif %}
+        <a href="{{ url_for('view_clinical_data') }}" class="btn btn-secondary">View Clinical Data</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

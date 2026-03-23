@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Patient Re-identification</h2>
+    <p class="subtitle">Authorized access to patient identifiable information</p>
+    <div class="role-badge">
+        <i class="icon-shield"></i> Administrator Access Only
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <div class="form-container card">
+        <form method="POST" action="{{ url_for('reidentify') }}">
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="icon-search"></i> Re-identification Request
+                </h3>
+                
+                <div class="alert warning">
+                    <i class="icon-alert"></i>
+                    <strong>Warning:</strong> This function reveals patient identifiable information. 
+                    Access is logged and audited. Use only for legitimate medical or administrative purposes.
+                </div>
+                
+                <div class="form-group">
+                    <label for="pseudonym_id" class="form-label">
+                        Pseudonym ID *
+                        <span class="hint">(Format: P-XXXXXX)</span>
+                    </label>
+                    <input type="text" 
+                           id="pseudonym_id" 
+                           name="pseudonym_id" 
+                           class="form-control"
+                           placeholder="Enter pseudonym ID to re-identify"
+                           pattern="P-[A-Z0-9]{6}"
+                           title="Format: P- followed by 6 uppercase letters/numbers"
+                           required>
+                    <div class="form-hint">
+                        Enter the pseudonym ID from clinical records
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reason" class="form-label">Reason for Re-identification *</label>
+                    <select id="reason" name="reason" class="form-control" required>
+                        <option value="">Select a reason...</option>
+                        <option value="patient_care">Direct Patient Care</option>
+                        <option value="clinical_audit">Clinical Audit</option>
+                        <option value="safety_incident">Patient Safety Incident</option>
+                        <option value="legal_requirement">Legal Requirement</option>
+                        <option value="data_correction">Data Correction Request</option>
+                        <option value="other">Other (specify in notes)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes" class="form-label">Additional Notes</label>
+                    <textarea id="notes" 
+                              name="notes" 
+                              class="form-control textarea"
+                              rows="2"
+                              placeholder="Provide additional context for this request..."></textarea>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="icon-search"></i> Re-identify Patient
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    Clear Form
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if patient_info %}
+    <div class="result-container card">
+        <h3 class="result-title">
+            <i class="icon-user"></i> Patient Identifiable Information
+        </h3>
+        
+        <div class="alert success">
+            <i class="icon-check"></i>
+            <strong>Re-identification Successful</strong> - Access logged
+        </div>
+        
+        <div class="patient-details">
+            <div class="detail-section">
+                <h4><i class="icon-id"></i> Patient Demographics</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Full Name:</span>
+                        <span class="detail-value">{{ patient_info.name }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">NHS Number:</span>
+                        <span class="detail-value">{{ patient_info.nhs_number }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date of Birth:</span>
+                        <span class="detail-value">{{ patient_info.date_of_birth }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            {% if patient_info.email or patient_info.phone %}
+            <div class="detail-section">
+                <h4><i class="icon-contact"></i> Contact Information</h4>
+                <div class="detail-grid">
+                    {% if patient_info.email %}
+                    <div class="detail-item">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">{{ patient_info.email }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if patient_info.phone %}
+                    <div class="detail-item">
+                        <span class="detail-label">Phone:</span>
+                        <span class="detail-value">{{ patient_info.phone }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="detail-section">
+                <h4><i class="icon-info"></i> System Information</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Pseudonym ID:</span>
+                        <span class="detail-value code">{{ request.form.pseudonym_id }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Re-identification Time:</span>
+                        <span class="detail-value">{{ now.strftime('%Y-%m-%d %H:%M:%S') if now else 'Current time' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Requested By:</span>
+                        <span class="detail-value">{{ session.username }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="audit-notice">
+            <i class="icon-audit"></i>
+            <strong>Audit Logged:</strong> This re-identification has been recorded in the system audit log.
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="info-sidebar">
+        <div class="info-card">
+            <h3><i class="icon-lock"></i> Access Controls</h3>
+            <p>Re-identification is strictly controlled:</p>
+            <ul class="info-list">
+                <li>Requires administrator privileges</li>
+                <li>All access is logged and audited</li>
+                <li>Requires valid reason for access</li>
+                <li>GDPR Article 9 compliant</li>
+            </ul>
+        </div>
+        
+        <div class="info-card">
+            <h3><i class="icon-law"></i> Legal Compliance</h3>
+            <p>Under GDPR and DPA 2018:</p>
+            <ul class="info-list">
+                <li>Re-identification must have lawful basis</li>
+                <li>Data minimization principles apply</li>
+                <li>Access must be necessary and proportionate</li>
+                <li>Audit trails must be maintained</li>
+            </ul>
+        </div>
+        
+        <div class="info-card warning">
+            <h3><i class="icon-alert"></i> Responsibilities</h3>
+            <p>As an administrator:</p>
+            <ul class="info-list">
+                <li>You are responsible for proper use</li>
+                <li>Only access information when necessary</li>
+                <li>Protect re-identified information</li>
+                <li>Report any unauthorized access</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-badge {
+        display: inline-block;
+        background: #005eb8;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .role-badge i {
+        margin-right: 0.5rem;
+    }
+    
+    .content-wrapper {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .form-container {
+        flex: 2;
+    }
+    
+    .info-sidebar {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .alert.warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+    }
+    
+    .alert.success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+    
+    .alert i {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .result-container {
+        margin-top: 2rem;
+        padding: 2rem;
+    }
+    
+    .result-title {
+        color: #005eb8;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .patient-details {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .detail-section {
+        margin-bottom: 2rem;
+    }
+    
+    .detail-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .detail-section h4 {
+        color: #495057;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+    
+    .detail-item {
+        padding: 0.75rem;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .detail-value {
+        color: #212529;
+        font-size: 1rem;
+    }
+    
+    .detail-value.code {
+        font-family: 'Courier New', monospace;
+        background: #e9ecef;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    
+    .audit-notice {
+        background: #e8f4fd;
+        border-left: 4px solid #17a2b8;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .form-section, .form-group, .form-actions {
+        /* Same as add_clinical_data.html */
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-control, .textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .form-control:focus, .textarea:focus {
+        outline: none;
+        border-color: #005eb8;
+        box-shadow: 0 0 0 2px rgba(0, 94, 184, 0.1);
+    }
+    
+    .textarea {
+        resize: vertical;
+        min-height: 60px;
+    }
+    
+    .form-hint {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: #005eb8;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .info-card {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #005eb8;
+    }
+    
+    .info-card.warning {
+        background: #fff3cd;
+        border-left-color: #856404;
+    }
+    
+    .info-card h3 {
+        color: #005eb8;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-card.warning h3 {
+        color: #856404;
+    }
+    
+    .info-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .info-list li {
+        padding: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    .info-list li:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #005eb8;
+        font-weight: bold;
+    }
+    
+    .info-card.warning .info-list li:before {
+        color: #856404;
+    }
+    
+    /* Icons */
+    .icon-shield:before { content: "🛡️"; }
+    .icon-search:before { content: "🔍"; }
+    .icon-alert:before { content: "⚠️"; }
+    .icon-user:before { content: "👤"; }
+    .icon-check:before { content: "✅"; }
+    .icon-id:before { content: "🆔"; }
+    .icon-contact:before { content: "📞"; }
+    .icon-info:before { content: "ℹ️"; }
+    .icon-audit:before { content: "📊"; }
+    .icon-lock:before { content: "🔒"; }
+    .icon-law:before { content: "⚖️"; }
+</style>
+{% endblock %}

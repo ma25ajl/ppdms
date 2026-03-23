@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>System Debug Information</h2>
+
+<div class="debug-container">
+    <div class="debug-card">
+        <h3>Files</h3>
+        <ul>
+            <li>Key file exists: {{ info.key_file_exists }}</li>
+            <li>Database exists: {{ info.db_file_exists }}</li>
+        </ul>
+    </div>
+
+    <div class="debug-card">
+        <h3>Database Tables</h3>
+        <ul>
+            {% for table in info.tables %}
+            <li>{{ table }}: {{ info[table + '_count'] }} records</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="debug-card">
+        <h3>Test Re-identification</h3>
+        <p>Try these IDs from your database:</p>
+        <ul>
+            <li>P-805A14 (John Smith)</li>
+            <li>P-3EB51A (Sarah Johnson)</li>
+            <li>P-42B323 (David Williams)</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+.debug-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.debug-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.debug-card h3 {
+    color: #005eb8;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #005eb8;
+    padding-bottom: 5px;
+}
+
+.debug-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.debug-card li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.debug-card li:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

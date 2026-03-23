@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add New Patient</h2>
+<div class="form-container">
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="nhs_number">NHS Number:</label>
+            <input type="text" id="nhs_number" name="nhs_number" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date_of_birth">Date of Birth:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Add Patient</button>
+    </form>
+</div>
+
+<div class="info-box">
+    <h4>About Pseudonymisation</h4>
+    <p>When you add a patient, the system will:</p>
+    <ul>
+        <li>Generate a unique pseudonym ID (e.g., P-7X82A1)</li>
+        <li>Encrypt and securely store identifiable information</li>
+        <li>Use only the pseudonym ID for clinical data linkage</li>
+    </ul>
+</div>
+{% endblock %}

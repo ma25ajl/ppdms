@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Clinical Data</h2>
+
+<div class="search-box">
+    <form method="GET">
+        <div class="form-group">
+            <label for="pseudonym_id">Filter by Pseudonym ID:</label>
+            <input type="text" id="pseudonym_id" name="pseudonym_id" 
+                   value="{{ pseudonym_id or '' }}" placeholder="Enter Pseudonym ID">
+            <button type="submit" class="btn btn-secondary">Filter</button>
+            <a href="{{ url_for('view_clinical_data') }}" class="btn btn-outline">Clear</a>
+        </div>
+    </form>
+</div>
+
+{% if clinical_data %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Pseudonym ID</th>
+            <th>Diagnosis</th>
+            <th>Treatment</th>
+            <th>Lab Results</th>
+            <th>Visit Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in clinical_data %}
+        <tr>
+            <td>{{ record.pseudonym_id }}</td>
+            <td>{{ record.diagnosis }}</td>
+            <td>{{ record.treatment }}</td>
+            <td>{{ record.lab_results }}</td>
+            <td>{{ record.visit_date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="no-data">No clinical data found.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pseudonymised Patient Data Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">NHS Pseudonymisation System</h1>
+            <div class="nav-links">
+                {% if session.username %}
+                    <span>Welcome, {{ session.username }} ({{ session.role }})</span>
+                    <a href="{{ url_for('index') }}">Home</a>
+                    {% if session.role == 'admin' %}
+                        <a href="{{ url_for('add_patient') }}">Add Patient</a>
+                        <a href="{{ url_for('reidentify') }}">Re-identify</a>
+                    {% endif %}
+                    {% if session.role == 'clinician' %}
+                        <a href="{{ url_for('add_clinical_data') }}">Add Clinical Data</a>
+                    {% endif %}
+                    <a href="{{ url_for('view_clinical_data') }}">View Clinical Data</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

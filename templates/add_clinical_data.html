@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Add Clinical Data</h2>
+    <p class="subtitle">Add medical information linked to pseudonym ID</p>
+</div>
+
+<div class="content-wrapper">
+    <div class="form-container card">
+        <form method="POST" action="{{ url_for('add_clinical_data') }}">
+            <div class="form-section">
+                <h3 class="form-section-title">Patient Identification</h3>
+                
+                <div class="form-group">
+                    <label for="pseudonym_id" class="form-label">
+                        Pseudonym ID *
+                        <span class="hint">(Format: P-XXXXXX, e.g., P-7X82A1)</span>
+                    </label>
+                    <input type="text" 
+                           id="pseudonym_id" 
+                           name="pseudonym_id" 
+                           class="form-control"
+                           placeholder="Enter patient pseudonym ID"
+                           pattern="P-[A-Z0-9]{6}"
+                           title="Format: P- followed by 6 uppercase letters/numbers"
+                           required>
+                    <div class="form-hint">
+                        <i class="icon-info"></i> Enter the pseudonym ID generated when patient was registered
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">Clinical Information</h3>
+                
+                <div class="form-group">
+                    <label for="diagnosis" class="form-label">Diagnosis *</label>
+                    <select id="diagnosis" name="diagnosis" class="form-control" required>
+                        <option value="">Select diagnosis...</option>
+                        <option value="Hypertension">Hypertension</option>
+                        <option value="Diabetes Type 2">Diabetes Type 2</option>
+                        <option value="Asthma">Asthma</option>
+                        <option value="Coronary Artery Disease">Coronary Artery Disease</option>
+                        <option value="COPD">COPD</option>
+                        <option value="Depression">Depression</option>
+                        <option value="Osteoarthritis">Osteoarthritis</option>
+                        <option value="Other">Other (specify in notes)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="treatment" class="form-label">Treatment Plan</label>
+                    <textarea id="treatment" 
+                              name="treatment" 
+                              class="form-control textarea"
+                              rows="3"
+                              placeholder="Describe the treatment prescribed..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lab_results" class="form-label">Lab Results</label>
+                    <textarea id="lab_results" 
+                              name="lab_results" 
+                              class="form-control textarea"
+                              rows="4"
+                              placeholder="Enter laboratory test results, measurements, or observations..."></textarea>
+                    <div class="form-hint">
+                        Format: Test Name: Value; e.g., HbA1c: 6.8%; Cholesterol: 5.2 mmol/L
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="visit_date" class="form-label">Visit Date *</label>
+                        <input type="date" 
+                               id="visit_date" 
+                               name="visit_date" 
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <div class="form-group half-width">
+                        <label for="visit_type" class="form-label">Visit Type</label>
+                        <select id="visit_type" name="visit_type" class="form-control">
+                            <option value="Routine Checkup">Routine Checkup</option>
+                            <option value="Follow-up">Follow-up</option>
+                            <option value="Emergency">Emergency</option>
+                            <option value="Specialist Referral">Specialist Referral</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="clinical_notes" class="form-label">Clinical Notes</label>
+                    <textarea id="clinical_notes" 
+                              name="clinical_notes" 
+                              class="form-control textarea"
+                              rows="2"
+                              placeholder="Additional clinical observations or notes..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">Medication</h3>
+                
+                <div class="form-group">
+                    <label for="medication" class="form-label">Medication Prescribed</label>
+                    <textarea id="medication" 
+                              name="medication" 
+                              class="form-control textarea"
+                              rows="2"
+                              placeholder="List medications, dosage, and frequency..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="icon-save"></i> Save Clinical Data
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    Clear Form
+                </button>
+                <a href="{{ url_for('view_clinical_data') }}" class="btn btn-outline">
+                    View Existing Data
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="info-sidebar">
+        <div class="info-card">
+            <h3><i class="icon-info-circle"></i> How Clinical Data Works</h3>
+            <p>Clinical data is stored separately from patient identifiers:</p>
+            <ul class="info-list">
+                <li><strong>Privacy Protected:</strong> Only pseudonym ID links to patient</li>
+                <li><strong>Researchers:</strong> Can analyze clinical patterns without identifying patients</li>
+                <li><strong>Clinicians:</strong> Need pseudonym ID to add/update records</li>
+                <li><strong>Administrators:</strong> Can re-identify if medically necessary</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <h3><i class="icon-shield"></i> Data Protection</h3>
+            <p>All clinical data is:</p>
+            <ul class="info-list">
+                <li>Stored in pseudonymised format</li>
+                <li>Accessible only to authorized personnel</li>
+                <li>Audit logged for accountability</li>
+                <li>GDPR compliant</li>
+            </ul>
+        </div>
+
+        <div class="info-card warning">
+            <h3><i class="icon-alert"></i> Important Notice</h3>
+            <p><strong>Never</strong> include identifiable information in clinical data fields.</p>
+            <p>Avoid: names, addresses, phone numbers, NHS numbers, or any information that could identify a patient.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .content-wrapper {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .form-container {
+        flex: 2;
+    }
+
+    .info-sidebar {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .form-section-title {
+        color: #005eb8;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-hint {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #005eb8;
+        box-shadow: 0 0 0 2px rgba(0, 94, 184, 0.1);
+    }
+
+    .textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .half-width {
+        flex: 1;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eaeaea;
+    }
+
+    .btn-large {
+        padding: 0.875rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    .info-card {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #005eb8;
+    }
+
+    .info-card.warning {
+        background: #fff3cd;
+        border-left-color: #856404;
+    }
+
+    .info-card h3 {
+        color: #005eb8;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-card.warning h3 {
+        color: #856404;
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .info-list li {
+        padding: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .info-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #28a745;
+    }
+
+    .info-card.warning .info-list li:before {
+        content: "!";
+        color: #856404;
+    }
+
+    .icon-info, .icon-save, .icon-info-circle, .icon-shield, .icon-alert {
+        font-style: normal;
+    }
+
+    .icon-info:before { content: "ℹ️"; }
+    .icon-save:before { content: "💾"; }
+    .icon-info-circle:before { content: "🔵"; }
+    .icon-shield:before { content: "🛡️"; }
+    .icon-alert:before { content: "⚠️"; }
+</style>
+{% endblock %}
