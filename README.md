@@ -1,23 +1,51 @@
 # Pseudonymised Patient Data Management System (PPDMS)
 
-A secure patient data management system implementing pseudonymisation for GDPR-compliant medical research and clinical audit.
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
+![SQLite](https://img.shields.io/badge/SQLite-3-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-## Features
+A secure patient data management system implementing **pseudonymisation** for GDPR-compliant medical research and clinical audit. This system demonstrates how healthcare organisations can balance data utility for research with strict privacy protection requirements.
 
-- **Pseudonymisation**: Patient identifiers encrypted with AES-256, separated from clinical data
-- **Role-Based Access**: Admin, Clinician, and Researcher roles with different permissions
-- **Secure Re-identification**: Authorized admin access with audit logging
-- **Clinical Data Management**: Store and retrieve anonymised patient records
-- **GDPR Compliant**: Implements data protection by design
+## 🏥 Overview
 
-## Technology Stack
+The PPDMS addresses the critical challenge of protecting patient identities while enabling valuable medical research. It implements:
 
-- **Backend**: Python 3.8+ with Flask
-- **Database**: SQLite with encryption at rest
-- **Security**: Cryptography library (AES-256, Fernet)
-- **Frontend**: HTML5, CSS3, JavaScript
+- **AES-256 encryption** for all identifiable patient information
+- **Pseudonymisation** with reversible mapping for authorised access
+- **Role-based access control** (Admin, Clinician, Researcher)
+- **Separation of concerns** between identifiable and clinical data
+- **GDPR-compliant** data protection by design
 
-## Installation
+## ✨ Features
+
+### 🔒 Security
+- AES-256 encryption at rest
+- Secure key management
+- Role-based access control
+- SQL injection prevention
+- Audit logging for re-identification
+
+### 👥 User Roles
+| Role | Permissions |
+|------|-------------|
+| **Administrator** | Add patients, re-identify, full system access |
+| **Clinician** | Add clinical data, view patient records |
+| **Researcher** | View anonymised clinical data only |
+
+### 📊 Data Management
+- Patient registration with pseudonym generation
+- Clinical data entry with diagnoses, treatments, lab results
+- Secure re-identification for authorized users
+- Clinical data filtering by pseudonym ID
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
+
+### Installation
 
 1. Clone the repository:
 ```bash
